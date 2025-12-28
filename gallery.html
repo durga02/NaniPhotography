@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="icon" href="browserlogo.PNG">
+  <title>Starnani Photography — Gallery</title>
+  <meta name="description" content="Starnani Photography — Model-style masonry gallery with lightbox" />
+  <style>
+    :root{
+      --bg:#0f0f10;
+      --card:#0b0b0c;
+      --muted:#bdbdbd;
+      --accent:#ffd166;
+      --glass: rgba(255,255,255,0.04);
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg,#070707 0%, #0f0f10 100%);
+      color: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
+    }
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px
+    }
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{
+      width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffb4a2);display:flex;align-items:center;justify-content:center;color:#111;font-weight:700
+    }
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    /* Masonry container using CSS columns */
+    .masonry{
+      column-count:3;
+      column-gap:18px;
+      max-width:1300px;
+      margin:24px auto 80px;
+      width:100%;
+    }
+    @media (max-width:1100px){.masonry{column-count:2}}
+    @media (max-width:700px){.masonry{column-count:1}}
+
+    .item{
+      display:inline-block;
+      width:100%;
+      margin:0 0 18px;
+      border-radius:12px;
+      overflow:hidden;
+      background:var(--card);
+      box-shadow:0 6px 18px rgba(2,2,2,0.6);
+      transform-origin:center;
+      transition:transform var(--transition), box-shadow var(--transition);
+      opacity:0; /* will fade in */
+      animation:fadeUp .6s ease forwards;
+    }
+    @keyframes fadeUp{ from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+
+    .item img{
+      display:block;
+      width:100%;
+      height:auto;
+      vertical-align:middle;
+      transition: transform var(--transition);
+      will-change: transform;
+    }
+
+    .overlay{
+      position:relative;
+    }
+
+    /* Hover effects */
+    .item:hover{ transform:translateY(-6px) scale(1.01); box-shadow:0 18px 40px rgba(0,0,0,0.6)}
+    .item:hover img{ transform:scale(1.06) }
+
+    /* Caption bar */
+    .caption{
+      position:absolute;left:0;right:0;bottom:0;padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+      background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 50%);
+      color:#fff;font-size:13px
+    }
+    .meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .meta .name{font-weight:600}
+    .meta .type{font-size:12px;color:var(--muted)}
+
+    /* small label in corner */
+    .label{
+      position:absolute;top:12px;left:12px;background:var(--glass);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--muted);backdrop-filter:blur(6px)
+    }
+
+    /* Lightbox modal */
+    .lightbox{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1200;padding:28px;background:rgba(0,0,0,0.8)
+    }
+    .lightbox.open{display:flex}
+    .lightbox-content{max-width:1200px;width:100%;max-height:90vh;display:flex;align-items:center;gap:18px}
+    .lb-image-wrap{flex:1;display:flex;align-items:center;justify-content:center}
+    .lb-image-wrap img{max-width:100%;max-height:90vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.7)}
+    .lb-side{width:320px;min-width:220px}
+    .lb-caption{font-size:15px;margin-bottom:8px}
+    .lb-sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+
+    .controls{display:flex;gap:8px}
+    .btn{background:var(--glass);border:none;padding:10px 12px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600}
+    .btn:focus{outline:2px solid rgba(255,209,102,0.3)}
+
+    /* navigation arrows */
+    .nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:1300;background:rgba(0,0,0,0.35);border-radius:999px;border:none;padding:12px;cursor:pointer}
+    .nav-arrow.left{left:18px}
+    .nav-arrow.right{right:18px}
+
+    /* small responsive tweaks */
+    @media (max-width:900px){.lb-side{display:none}.lightbox-content{padding:12px}}
+
+    /* helper: visually hidden */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+
+    .gallery-brand {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 10px 14px;
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+}
+
+.gallery-brand img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+}
+
+.gallery-brand h1 {
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.gallery-brand span {
+  font-size: 11px;
+  color: #bbb;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Gallery Brand Header -->
+    <div class="gallery-brand">
+    <img src="STAR NANI 2.PNG" alt="Starnani Photography" />
+    <div class="brand-text">
+      <h1>Starnani Photography</h1>
+      <span>Capturing Timeless Moments</span>
+    </div>
+    </div>
+    <!-- <div>
+      <button class="btn" id="gridToggle" aria-pressed="false">Toggle captions</button>
+    </div> -->
+  </header>
+
+  <!-- Masonry Gallery -->
+  <main>
+    <section class="masonry" id="gallery">
+      <!-- Example items: replace src and data-caption values with your own images and meta -->
+
+      <figure class="item" data-index="0" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bgFHBRyU0hZ1_Kn1-wGJM2qCe7ffHDJpwno-pEcjtJnw?cn=THISLIFE&res=medium&ts=1765522262">
+        <div class="overlay">
+          <!-- <span class="label">Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bgFHBRyU0hZ1_Kn1-wGJM2qCe7ffHDJpwno-pEcjtJnw?cn=THISLIFE&res=medium&ts=1765522262" loading="lazy" alt="Aisha — Studio fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Varma</div><div class="type">Studio · Fashion</div></div>
+            <div class="meta"><div class="type">Location: Mandapeta</div><div class="type">2023</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="1" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bQAXDlBfR_SOXHQ_6_GAXZVZV51t4MhjbEwRNyGscOgg?cn=THISLIFE&res=medium&ts=1765522206">
+        <div class="overlay">
+          <!-- <span class="label">Editorial</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bQAXDlBfR_SOXHQ_6_GAXZVZV51t4MhjbEwRNyGscOgg?cn=THISLIFE&res=medium&ts=1765522206" loading="lazy" alt="Rohit — Outdoor editorial"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Rakesh K</div><div class="type">Outdoor · Editorial</div></div>
+            <div class="meta"><div class="type">Location: Kakinada</div><div class="type">2024</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="2" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YTGYm2UMpVtFFJqcCJgqUBrnHjCyIZu59oV2we_kMG9A?cn=THISLIFE&res=medium&ts=1765522298">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YTGYm2UMpVtFFJqcCJgqUBrnHjCyIZu59oV2we_kMG9A?cn=THISLIFE&res=medium&ts=1765522298" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Priya</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Mandapeta</div><div class="type">2022</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="3" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-aW2t7OoMTjdlXR-I7zAKeLldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765522228">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-aW2t7OoMTjdlXR-I7zAKeLldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765522228" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Ramachandrapuram</div><div class="type">2023</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="4" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-_lpx47dp2xCF5GTlv-jogMZFrsNVynR9JZ66mkYymsNoc96j_KgX9e9a4zqZyVYQI1jsUoFM1XRfFOk6mQD_Xw?cn=THISLIFE&res=medium&ts=1765522284">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-_lpx47dp2xCF5GTlv-jogMZFrsNVynR9JZ66mkYymsNoc96j_KgX9e9a4zqZyVYQI1jsUoFM1XRfFOk6mQD_Xw?cn=THISLIFE&res=medium&ts=1765522284" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Pavani</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Rajamundry</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="5" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YJyX7pqjoxwgCTEZ79QwQ3Kwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765551016489">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YJyX7pqjoxwgCTEZ79QwQ3Kwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765551016489" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Karthik</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Vizag</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="6" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ZtbceCAY4NuSOT1R9ZBo8F4xJ2Twu75QF_jizMkB1ZdA?cn=THISLIFE&res=medium&ts=1765551058617">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ZtbceCAY4NuSOT1R9ZBo8F4xJ2Twu75QF_jizMkB1ZdA?cn=THISLIFE&res=medium&ts=1765551058617" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Manoj</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Kakinada</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="7" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ad1vqYqguwihcbVOBr1xvSldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765604673353">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ad1vqYqguwihcbVOBr1xvSldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765604673353" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name"></div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: </div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="8" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-b0EcvUoQjMKSnTYAsMHgiyrnHjCyIZu59oV2we_kMG9A?cn=THISLIFE&res=small&ts=1765604718266">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-b0EcvUoQjMKSnTYAsMHgiyrnHjCyIZu59oV2we_kMG9A?cn=THISLIFE&res=small&ts=1765604718266" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name"></div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: </div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="9" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bSGj1xnpEFvzy22w8gSWW8aAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765604817932">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bSGj1xnpEFvzy22w8gSWW8aAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765604817932" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name"></div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: </div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="10" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YDho-Y0MjQj_dRAsv8J-UiaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765604883585">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YDho-Y0MjQj_dRAsv8J-UiaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765604883585" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name"></div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: </div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="11" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-b3tM364MdU5J22LtgCwaaV4xJ2Twu75QF_jizMkB1ZdA?cn=THISLIFE&res=medium&ts=1765522300">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-b3tM364MdU5J22LtgCwaaV4xJ2Twu75QF_jizMkB1ZdA?cn=THISLIFE&res=medium&ts=1765522300" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <!-- <figure class="item" data-index="" data-name="" data-type="" data-full="images/3-full.jpg">
+        <div class="overlay">
+          <span class="label">High-Fashion</span>
+          <img src="" loading="lazy" alt="Meera — High Fashion"/>
+          <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption>
+        </div>
+      </figure> -->
+
+      <figure class="item" data-index="12" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YPUe72JObCmd6733_7xPLnaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765605555674">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YPUe72JObCmd6733_7xPLnaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765605555674" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="13" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bWiOqKTkWuKUNLmyvNbf2I5cYdfB3jRoL_VZILaXEufg?cn=THISLIFE&res=medium&ts=1765605738982">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bWiOqKTkWuKUNLmyvNbf2I5cYdfB3jRoL_VZILaXEufg?cn=THISLIFE&res=medium&ts=1765605738982" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="14" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-a0cJxnoici1AM5YQiqKmFhldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765605842097">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-a0cJxnoici1AM5YQiqKmFhldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765605842097" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="15" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-b6U8DmZMC-ytuCNd2FPNyCaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765605926394">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-b6U8DmZMC-ytuCNd2FPNyCaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765605926394" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="16" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-_lpx47dp2xCF5GTlv-jogMZFrsNVynR9JZ66mkYymsP-KslpZvuZce91J1JVQRVTI1jsUoFM1XRfFOk6mQD_Xw?cn=THISLIFE&res=medium&ts=1765522258">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-_lpx47dp2xCF5GTlv-jogMZFrsNVynR9JZ66mkYymsP-KslpZvuZce91J1JVQRVTI1jsUoFM1XRfFOk6mQD_Xw?cn=THISLIFE&res=medium&ts=1765522258" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="17" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YmWNSHNKNGBBqcIJCtutfYaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765606160861">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YmWNSHNKNGBBqcIJCtutfYaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765606160861" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="18" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-adLNn6UQamzuiLaTOfUiRuKwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765606241573">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-adLNn6UQamzuiLaTOfUiRuKwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765606241573" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="19" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-Z9Eh9kb3Mb9ch_lrIToWCYUnDnu4gHHWpfyYq5WwzmNg?cn=THISLIFE&res=medium&ts=1765606283466">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-Z9Eh9kb3Mb9ch_lrIToWCYUnDnu4gHHWpfyYq5WwzmNg?cn=THISLIFE&res=medium&ts=1765606283466" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+
+      <figure class="item" data-index="20" data-name="" data-type="" data-full="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ZZ9FZroSaDKGxRCKJUai9cldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765522303">
+        <div class="overlay">
+          <!-- <span class="label">High-Fashion</span> -->
+          <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ZZ9FZroSaDKGxRCKJUai9cldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765522303" loading="lazy" alt="Meera — High Fashion"/>
+          <!-- <figcaption class="caption">
+            <div class="meta"><div class="name">Meera Patel</div><div class="type">High-Fashion</div></div>
+            <div class="meta"><div class="type">Location: Delhi</div><div class="type">2025</div></div>
+          </figcaption> -->
+        </div>
+      </figure>
+      <!-- Add more items here. Keep data-index sequential starting at 0 for keyboard navigation. data-full is optional (falls back to src).
+           Pro tip: create two image sizes: a thumb (used in grid) and a full (used in lightbox) for performance. -->
+
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="lightbox-content" role="document">
+      <div class="lb-image-wrap">
+        <img id="lb-img" src="" alt="" />
+      </div>
+      <aside class="lb-side" aria-hidden="false">
+        <div class="lb-caption" id="lb-caption">&nbsp;</div>
+        <div class="lb-sub" id="lb-sub">&nbsp;</div>
+        <div class="controls">
+          <button class="btn" id="downloadBtn">Download</button>
+          <button class="btn" id="closeBtn">Close</button>
+        </div>
+      </aside>
+    </div>
+    <button class="nav-arrow left" id="prevBtn" aria-label="Previous image">◀</button>
+    <button class="nav-arrow right" id="nextBtn" aria-label="Next image">▶</button>
+  </div>
+
+  <script>
+    (function(){
+      const gallery = document.getElementById('gallery');
+      const items = Array.from(gallery.querySelectorAll('.item'));
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lb-img');
+      const lbCaption = document.getElementById('lb-caption');
+      const lbSub = document.getElementById('lb-sub');
+      const closeBtn = document.getElementById('closeBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const gridToggle = document.getElementById('gridToggle');
+
+      let currentIndex = 0;
+
+      function openLightbox(index){
+        const item = items[index];
+        if(!item) return;
+        const img = item.querySelector('img');
+        const full = item.getAttribute('data-full') || img.src;
+        const name = item.getAttribute('data-name') || '';
+        const type = item.getAttribute('data-type') || '';
+
+        currentIndex = index;
+        lbImg.src = full;
+        lbImg.alt = name + ' — ' + type;
+        lbCaption.textContent = name;
+        lbSub.textContent = type;
+        downloadBtn.onclick = () => { window.open(full, '_blank') }
+
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        // focus management
+        closeBtn.focus();
+      }
+
+      function closeLightbox(){
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+
+      function showNext(){
+        const next = (currentIndex + 1) % items.length;
+        openLightbox(next);
+      }
+      function showPrev(){
+        const prev = (currentIndex - 1 + items.length) % items.length;
+        openLightbox(prev);
+      }
+
+      // attach click on each item
+      items.forEach((it, i) => {
+        it.addEventListener('click', (e)=>{
+          openLightbox(i);
+        });
+      });
+
+      // controls
+      closeBtn.addEventListener('click', closeLightbox);
+      nextBtn.addEventListener('click', showNext);
+      prevBtn.addEventListener('click', showPrev);
+
+      // keyboard navigation
+      document.addEventListener('keydown', (e)=>{
+        if(lightbox.classList.contains('open')){
+          if(e.key === 'Escape') closeLightbox();
+          if(e.key === 'ArrowRight') showNext();
+          if(e.key === 'ArrowLeft') showPrev();
+        }
+      });
+
+      // click outside image closes
+      lightbox.addEventListener('click', (e)=>{
+        if(e.target === lightbox) closeLightbox();
+      });
+
+      // simple fade-in stagger for items
+      items.forEach((el, idx)=>{
+        el.style.animationDelay = (idx * 60) + 'ms';
+      });
+
+      // Toggle captions
+      let captionsVisible = true;
+      gridToggle.addEventListener('click', ()=>{
+        captionsVisible = !captionsVisible;
+        document.querySelectorAll('.caption').forEach(c => c.style.display = captionsVisible ? 'block' : 'none');
+        gridToggle.setAttribute('aria-pressed', String(!captionsVisible));
+        gridToggle.textContent = captionsVisible ? 'Hide captions' : 'Show captions';
+      });
+
+      // Accessibility: trap focus inside lightbox when open (simple)
+      lightbox.addEventListener('keydown', function(e){
+        if(e.key !== 'Tab') return;
+        const focusable = lightbox.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const first = focusable[0];
+        const last = focusable[focusable.length-1];
+        if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      });
+
+      // optional: ensure data-indexes are sequential; if not, reassign
+      items.forEach((it, idx)=> it.setAttribute('data-index', idx));
+
+    })();
+  </script>
+</body>
+</html>

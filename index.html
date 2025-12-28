@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="browserlogo.PNG">
+  <title>Star Nani Photography</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Lightbox CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.4/dist/css/lightbox.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="logo">
+    <img src="STAR NANI 2.PNG" alt="Star Nani Logo">
+  </div>
+  <div class="menu-toggle" id="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+  <nav id="nav-menu">
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="service.html">Services</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Hero / CTA -->
+<section id="home" class="hero">
+  
+</section>
+
+
+<!-- Specialised -->
+<section id="specialised" class="specialised">
+  <h2>We Specialised In</h2>
+  <div class="categories-container">
+    
+    <div class="category" data-title="Wedding Photography">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-aGuG7PiQ7BfhrWk2zxr4z5ldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765522553" alt="Wedding Photography">
+    </div>
+
+    <div class="category" data-title="Pre-Wedding Photography">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YqFpHxNuqxnb_IkUk0_NAbKwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765522553" alt="Pre-Wedding Shoots">
+    </div>
+
+    <div class="category" data-title="Baby Shoots">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ZVwvYpOYiGJ8fw79j3dp6lKwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765522549" alt="Baby Shoots">
+    </div>
+
+    <div class="category" data-title="Event Photography">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YMcXZO74E_2b2AUE79QI2wqCe7ffHDJpwno-pEcjtJnw?cn=THISLIFE&res=medium&ts=1766153525571" alt="Event Photography">
+    </div>
+
+    <div class="category" data-title="Outdoor Photo Shoot">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bQAbwV5eR4sfdA5es9z8T8aAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765522551" alt="Portraits">
+    </div>
+
+    <div class="category" data-title="Martenity PhotoShoot">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YDku_68FRK7H6SPM6fZdBk5cYdfB3jRoL_VZILaXEufg?cn=THISLIFE&res=medium&ts=1765522549" alt="Fashion Shoots">
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Image Viewer -->
+<div id="imageViewer" class="image-viewer">
+  <div class="viewer-content">
+
+    <button id="closeViewer" class="image-close">✕</button>
+
+    <img id="viewerImg" src="" alt="Preview">
+
+    <div class="viewer-actions">
+      <!-- <a id="downloadBtn" download class="btn"></a> -->
+      <a href="gallery.html" class="btn">View More</a>
+      <!-- <a href="#contact" class="btn"></a> -->
+      <!-- <button id="closeViewer" class="btn close">Close</button> -->
+    </div>
+  </div>
+</div>
+
+
+<section class="diagonal-video-section">
+
+  <!-- TOP DIAGONAL -->
+  <div class="diagonal-top"></div>
+
+  <!-- VIDEO -->
+  <iframe
+    id="autoVimeo"
+    src="https://player.vimeo.com/video/1149430957?autoplay=1&muted=1&loop=1&background=1"
+    frameborder="0"
+    allow="autoplay; fullscreen">
+  </iframe>
+
+  <!-- BOTTOM DIAGONAL -->
+  <div class="diagonal-bottom"></div>
+
+</section>
+
+
+
+
+
+<!-- Image Slider -->
+<section id="gallery" class="slider">
+  <div class="slides">
+    <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-YXlytBQY3ZLPhP5aQM2hosldMTLfbtJ__wYVBQ_4iTow?cn=THISLIFE&res=medium&ts=1765522628" alt="Photo 1">
+    <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-bSVREEXfRM1GY2rVWvKfHdKwg5ydwHipy3aIZBf9dNYQ?cn=THISLIFE&res=medium&ts=1765522629" alt="Photo 2">
+    <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-Zb8rVWNGy_n8G1ehJ6wLgzrnHjCyIZu59oV2we_kMG9A?cn=THISLIFE&res=medium&ts=1765522627" alt="Photo 3">
+    <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-ZPYkI4gimQdfq8Yu12OiQsV7ntXQOewWgszVPDOQPWWw?cn=THISLIFE&res=medium&ts=1765522627" alt="Photo 4">
+    <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-auV9m9GaDIYqLyYDJspXjF4xJ2Twu75QF_jizMkB1ZdA?cn=THISLIFE&res=medium&ts=1765522629" alt="Photo 5">
+    <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-Yk2YlbHbfSLx2I2C1QZt6PaAUrgnwgvQnZ_1RWb7NZPA?cn=THISLIFE&res=medium&ts=1765522628" alt="Photo 6">
+  </div>
+  <div class="arrow left-arrow">&#10094;</div>
+  <div class="arrow right-arrow">&#10095;</div>
+  <div class="dots">
+    <span class="dot" data-index="0"></span>
+    <span class="dot" data-index="1"></span>
+    <span class="dot" data-index="2"></span>
+    <span class="dot" data-index="3"></span>
+    <span class="dot" data-index="4"></span>
+    <span class="dot" data-index="5"></span>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about">
+  <div class="about-container">
+    <!-- Text Content -->
+    <div class="about-text">
+      <h2>About Nani Photography</h2>
+      <h3> Capturing Moments, Creating Timeless Memories </h3> <br>
+      <p>
+        Welcome to <strong>Nani Photography,</strong> where photography is more than just a profession—it’s a passion that transforms fleeting moments into everlasting memories. Every picture tells a story, and our mission is to narrate yours in the most beautiful, artistic, and meaningful way possible.
+      </p>
+      <p>
+        Whether it’s the joy of a wedding, the excitement of an event, the elegance of a fashion shoot, or the professionalism of corporate branding, <strong>Nani Photography</strong> brings expertise, creativity, and emotion to every frame. We believe photography is not just about taking pictures; it’s about capturing the essence of a moment, the emotions behind a smile, and the sparkle in the eyes.
+      </p>
+      <a href="#contact" class="cta-btn">Book a Session</a>
+    </div>
+
+    <!-- Image Content -->
+    <div class="about-image">
+      <img src="https://uniim1.shutterfly.com/render/00-UM4Aty_NF3_C1wD18zNHdY-WSy7igtbJdNmlEU6uF-af2fji_SYHEp83Y-dKpaHF4xJ2Twu75QF_jizMkB1ZdA?cn=THISLIFE&res=medium&ts=1765522641" alt="About Star Nani Photography">
+    </div>
+  </div>
+</section>
+
+
+
+<section class="video-gallery">
+
+  <h1 class="gallery-heading">Our Cinematic Films</h1>
+
+  <div class="videos-row">
+
+    <div class="video-block">
+      <div class="video-wrapper">
+        <iframe
+          src="https://player.vimeo.com/video/1149430190"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture">
+        </iframe>
+      </div>
+
+      <h2 class="video-title">Wedding Highlight Film</h2>
+      <p class="video-desc">
+        A cinematic wedding film capturing emotions, rituals, and timeless moments.
+      </p>
+    </div>
+
+    <div class="video-block">
+      <div class="video-wrapper">
+        <iframe
+          src="https://player.vimeo.com/video/1149429829"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          >
+        </iframe>
+      </div>
+
+      <h2 class="video-title">Pre-Wedding Story</h2>
+      <p class="video-desc">
+        A romantic pre-wedding shoot blending storytelling with natural expressions.
+      </p>
+    </div>
+
+    <div class="video-block">
+      <div class="video-wrapper">
+        <iframe
+          src="https://player.vimeo.com/video/1149430624"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          >
+        </iframe>
+      </div>
+
+      <h2 class="video-title">Little Smiles, Big Celebrations</h2>
+      <p class="video-desc">
+        Tiny giggles, colorful balloons, and priceless expressions — we capture your child’s birthday moments with warmth and creativity.
+      </p>
+    </div>
+
+    <div class="video-block">
+      <div class="video-wrapper">
+        <iframe
+          src="https://player.vimeo.com/video/1149793785"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          >
+        </iframe>
+      </div>
+
+      <h2 class="video-title">Pre-Wedding Story</h2>
+      <p class="video-desc">
+        A romantic pre-wedding shoot blending storytelling with natural expressions.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="youtube-btn-wrapper">
+    <a href="https://www.youtube.com/@STARNANIPHOTOGRAPHY143" target="_blank" class="youtube-btn">
+      🎬 Visit YouTube Channel
+    </a>
+  </div>
+
+</section>
+
+
+
+<!-- Logo Section -->
+<section class="three-column-section">
+  <div class="column text-column">
+    <h3>The Word Of Nani Photography</h3>
+    <p>
+      It’s our promise to deliver exceptional photography, capturing every moment with artistic precision. From weddings to short films, we ensure stunning, high-quality images that turn your memories into timeless masterpieces.
+    </p>
+  </div>
+
+  <div class="column logo-column">
+    <img src="STAR NANI BROWN.png" alt="Star Nani Logo">
+  </div>
+
+  <div class="column text-column">
+    <h3>Let's Collaborate On Your Next Big Event</h3>
+    <p>
+      Let’s work together to bring your vision to life with our expertise in professional photography, creative direction, and visual storytelling, ensuring every shot reflects your unique story with precision and artistry.
+    </p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact">
+  <div class="footer-container">
+    <div class="footer-logo">
+      <p><i class="fas fa-phone"></i> +91-9963466143</p><br>
+      <p><i class="fas fa-envelope"></i> naniphotography143@gmail.com</p><br>
+      <p><i class="fas fa-map-marker-alt"></i><a target="_blank" href="https://maps.app.goo.gl/WEbdRrZSPyeVeBZY9"> Mandapeta, India</a></p><br>
+
+      <div class="social-icons">
+        <a target="_blank" href="https://www.instagram.com/starnaniphotography?igsh=MTh5ajgzNXZhc3BvaA=="><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div><br>
+      <p>© 2025 Star Nani Photography</p>
+    </div>
+
+    <div class="footer-form">
+      <h3>Contact Us</h3>
+      <form action="" method="POST">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="tel" id="phone" placeholder="Your Mobile Number" required>
+        <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
+
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_subject" value="New Photography Inquiry!">
+        <input type="hidden" name="_template" value="box">
+        <input type="hidden" name="_next" value="https://yourwebsite.com/thankyou.html">
+
+        <button type="button" onclick="sendToWhatsApp()">Send Message</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+
+
+<!-- JS Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.4/dist/js/lightbox-plus-jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="https://player.vimeo.com/api/player.js"></script>
+<!-- Custom JS -->
+<script src="script.js" defer></script>
+<script>
+AOS.init();
+</script>
+</body>
+</html>
